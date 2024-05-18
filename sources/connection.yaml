@@ -1,0 +1,4 @@
+name: marinerds_data
+type: duckdb
+options:
+  filename: marinerds_data.duckdb
