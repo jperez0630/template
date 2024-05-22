@@ -1,0 +1,1 @@
+SELECT * FROM mlb_pitching_data;

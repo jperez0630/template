@@ -8,8 +8,6 @@ import duckdb
 con = duckdb.connect(f'{Path.cwd()}/marinerds_data.duckdb')
 local_con = con.cursor()
 
-
-
 def get_most_recent_date():
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
     yesterday = yesterday.strftime("%Y-%m-%d")
@@ -75,8 +73,12 @@ def add_league_median_min_stats(df_filtered_pitching_stats):
 df_filtered_pitching_stats = add_league_median_min_stats(df_filtered_pitching_stats)
 
 def add_rank():
+    df_filtered_pitching_stats['ERA_Rank'] = df_filtered_pitching_stats['ERA'].rank()
+    df_filtered_pitching_stats['xERA_Rank'] = df_filtered_pitching_stats['xERA'].rank()
     df_filtered_pitching_stats['WHIP_Rank'] = df_filtered_pitching_stats['WHIP'].rank()
     df_filtered_pitching_stats['Hard_Hit_Percent_Rank'] = df_filtered_pitching_stats['Hard_Hit_Percent'].rank()
+    df_filtered_pitching_stats['H_per_9_Rank'] = df_filtered_pitching_stats['H_per_9'].rank()
+    df_filtered_pitching_stats['BB_per_9_Rank'] = df_filtered_pitching_stats['BB_per_9'].rank()
     df_filtered_pitching_stats['BABIP_Rank'] = df_filtered_pitching_stats['BABIP'].rank()
     return df_filtered_pitching_stats
 
@@ -91,4 +93,9 @@ df_mariners_staff = get_mariners_staff_data()
 local_con.sql('''
 CREATE OR REPLACE TABLE mariners_pitching_data AS
 SELECT * FROM df_mariners_staff
+''')
+
+local_con.sql('''
+CREATE OR REPLACE TABLE mlb_pitching_data AS
+SELECT * from df_filtered_pitching_stats
 ''')
